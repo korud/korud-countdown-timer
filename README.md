@@ -8,6 +8,10 @@ For complete Korud countdown timer documentation please visit the Korud Homepage
 
 -The code have the base but is incompatible with the before hardware.
 
+# Hardware
+For version 1.0 and 1.1 is required arduino mega, ramps 1.4, lcd 2004, 2 buttons and 2 resistor for buttons. (bassic instalation pullup or pulldown).
+For version 2.0 or later is required arduino uno, lcd keypad shield 1602 (of 6 buttons). 
+
 # License
 Korud countdown timer is published under the GPL license because we believe in open development. The GPL comes with both rights and obligations. Whether you use Korud countdown timer firmware as the driver for your open or closed-source product, you must keep Korud countdown timer open, and you must provide your compatible Korud countdown timer source code to end users upon request. The most straightforward way to comply with the Korud countdown timer license is to make a fork of Korud timer countdown on Github, perform your modifications, and direct users to your modified fork.
 

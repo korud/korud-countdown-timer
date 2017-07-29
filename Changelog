@@ -1,3 +1,8 @@
+# 2.0
+-Change the hardware, now use arduino nano con lcd keypad shield for arduino with 6 buttons.
+
+-The code have the base but is incompatible with the before hardware.
+
 # 1.1
 -Add the countdown visual
 

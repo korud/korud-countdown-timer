@@ -3,10 +3,10 @@ Korud countdown timer is the firmware for create a countdown timer programmable 
 
 For complete Korud countdown timer documentation please visit the Korud Homepage http://korud.com, where you will find in-depth articles, how-to videos, and tutorials on every aspect of Korud countdown timer, as the site develops. For release notes, see the Releases page.
 
-# 1.1
--Add the countdown visual
+# 2
+-Change the hardware, now use arduino nano con lcd keypad shield for arduino with 6 buttons.
 
--Add countdown previous
+-The code have the base but is incompatible with the before hardware.
 
 # License
 Korud countdown timer is published under the GPL license because we believe in open development. The GPL comes with both rights and obligations. Whether you use Korud countdown timer firmware as the driver for your open or closed-source product, you must keep Korud countdown timer open, and you must provide your compatible Korud countdown timer source code to end users upon request. The most straightforward way to comply with the Korud countdown timer license is to make a fork of Korud timer countdown on Github, perform your modifications, and direct users to your modified fork.

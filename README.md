@@ -10,6 +10,7 @@ For complete Korud countdown timer documentation please visit the Korud Homepage
 
 # Hardware
 For version 1.0 and 1.1 is required arduino mega, ramps 1.4, lcd 2004, 2 buttons and 2 resistor for buttons. (bassic instalation pullup or pulldown).
+
 For version 2.0 or later is required arduino uno, lcd keypad shield 1602 (of 6 buttons). 
 
 # License

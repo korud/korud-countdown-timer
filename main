@@ -14,6 +14,15 @@ LiquidCrystal lcd (16, 17, 23, 25, 27, 29);
 // Buzzer
 #define buzzer 37
 
+// Definimos tiempos
+int ahoras = 0;            //Variable a mostrar por LCD de las horas 
+int aminutos = 0;          //Variable a mostrar por LCD de los minutos 
+int asegundos = 0;         //Variable a mostrar por LCD de los segundos 
+int segundosprevio = 0;   //Inciar variaable para para mostrar por LCD de los segundos
+int segundostotal = 0;     //Tiempo total
+int segundosdescanso = 0;  //Segundos de descanso
+int tiempoprevio = 15;  //Segundos preparación antes del combate
+
 int select_btn_state = 0; 
 int select_btn_last_state = 0; 
 int ok_btn_state = 0; 
@@ -30,14 +39,18 @@ void setup() {
   pinMode (yellow_led, OUTPUT); 
   pinMode (red_led, OUTPUT);
   pinMode (buzzer, OUTPUT);
- //mensaje de inicio
-  lcd.begin(20, 4); // set up the LCD's number of columns and rows
-  lcd.print("Boxing Timer V1"); // Print a message to the LCD. 
-  lcd.setCursor(0, 1); 
-  lcd.print("By Tu puta madre"); 
-  delay (1000); 
+  //configuracion de pantalla columnas,filas
+  lcd.begin(20, 4);
+  //mensaje de inicio
+  lcd.setCursor(2,0);lcd.print("Boxing Timer V2");lcd.setCursor(5, 1); lcd.print("By Korud");delay (2000); 
 }
-
+/*void(* resetFunc) (void) = 0; //Funcion reset que luego llamamos
+select_btn_state = digitalRead(select_btn); 
+      ok_btn_state = digitalRead(ok_btn);
+       if ((select_btn_state == 1) && (ok_btn_state == 1)) {
+      lcd.print ("Reset");  
+       delay(5000);
+      resetFunc(); }*/
 void loop() {
   //definimos variables a 0
   rounds = 0; 
@@ -70,7 +83,7 @@ void loop() {
     }
   }while (ok_btn_last_state == 0); 
   //Mostramos Mensaje menu 2   
-  lcd.clear(); lcd.print ("Tiempo Rounds: ?"); lcd.setCursor(0,1); lcd.print ("Select para elegir");delay(200); 
+  lcd.clear(); lcd.print ("Tiempo rounds: ?"); lcd.setCursor(0,1); lcd.print ("Select para elegir");delay(200); 
   //Definimos el ultimo estado del boton ok a 0
   ok_btn_last_state = 0;
   do{
@@ -125,29 +138,94 @@ void loop() {
     delay(200); 
     ok_btn_last_state = 0;
 //-----------------------------------Fin menus----------------------------------------
+  //tiempo preparacion
+  segundosprevio = tiempoprevio; //Despues del bucle se queda en 0, Igualamos para tener valor en siguientes juegos.
+  while (segundosprevio > 0){
+      delay (1000);          //Descontamos en periodos de 1 segundo
+        segundosprevio--;    
+        ahoras = ((segundosprevio / 60)/ 60);   //Convertimos los segundos totales en horas
+        aminutos = (segundosprevio / 60) % 60;  //Convertimos los segundos totales en minutos
+        asegundos = segundosprevio % 60;        //Convertimos los segundos totales en periodos de 60 segundos 
+        //Mostrar el round que se esta jugando 
+        lcd.clear (); lcd.setCursor(3,0); lcd.print ("Tiempo previo");
+        lcd.setCursor(6,1);
+        if (ahoras < 10) lcd.print("0");     // Si las horas son menor que 10, pone un "0" delante.
+        lcd.print(ahoras);                   // Sin este codigo, se muestra asi: H:M:S  (1:M:S)
+        lcd.print(":");
+        if (aminutos < 10) lcd.print("0");   // Si los minutos son menor que 10, pone un "0" delante.
+        lcd.print(aminutos);                 // Sin este codigo, se muestra asi: H:M:S  (H:1:S)
+        lcd.print(":");
+        if (asegundos < 10) lcd.print("0");  // si el valor de segundo esta por debajo de 9 (unidad) antepone un cero
+        lcd.print(asegundos);                // Sin este codigo, se muestra asi: H:M:S  (H:M:1)       
+    }
   //Correr programa principal
+  //Tiempo de round
   for (i=1; i<= rounds; i++) {
-    //Encendemos timbre 2 segundos
-    digitalWrite (buzzer,HIGH); 
-    delay (2000); 
-    digitalWrite (buzzer,LOW); 
-    digitalWrite (green_led,HIGH);
-    //Mostrar el round que se esta jugando 
-    lcd.clear ();lcd.print("Round ");lcd.print(i);
-    //Esperamos con el mensaje el tiempo seleccionado, Convertimos los segundo a milisegundos y esperamos 
-    delay (rounds_time * 1000);
+    digitalWrite (green_led,HIGH);   
+    
+    segundostotal = rounds_time;
+    while (segundostotal > 0){      
+      delay (1000);          //Descontamos en periodos de 1 segundo
+       //Encendemos Timbre en el segundo 0
+      if (segundostotal == rounds_time){
+        digitalWrite (buzzer,HIGH);
+      } 
+      //Apagamos timbre a los dos segundos
+      if (segundostotal == rounds_time-2){
+        digitalWrite (buzzer,LOW);
+      }
+        segundostotal--;    
+        ahoras = ((segundostotal / 60)/ 60);   //Convertimos los segundos totales en horas
+        aminutos = (segundostotal / 60) % 60;  //Convertimos los segundos totales en minutos
+        asegundos = segundostotal % 60;        //Convertimos los segundos totales en periodos de 60 segundos 
+        //Mostrar el round que se esta jugando 
+        lcd.clear ();lcd.setCursor(6,0);lcd.print("Round ");lcd.print(i);
+        lcd.setCursor(2,2);
+        lcd.print("Tiempo restante");        //Mostramos mensaje de tiempo restante
+        lcd.setCursor(6,3);
+        if (ahoras < 10) lcd.print("0");     // Si las horas son menor que 10, pone un "0" delante.
+        lcd.print(ahoras);                   // Sin este codigo, se muestra asi: H:M:S  (1:M:S)
+        lcd.print(":");
+        if (aminutos < 10) lcd.print("0");   // Si los minutos son menor que 10, pone un "0" delante.
+        lcd.print(aminutos);                 // Sin este codigo, se muestra asi: H:M:S  (H:1:S)
+        lcd.print(":");
+        if (asegundos < 10) lcd.print("0");  // si el valor de segundo esta por debajo de 9 (unidad) antepone un cero
+        lcd.print(asegundos);                // Sin este codigo, se muestra asi: H:M:S  (H:M:1)       
+    }
     digitalWrite (green_led,LOW);
+    //Fin round
     //Cuando finaliza el delay si el round actual (i) es inferior al total activamos el descanso
+    //Tiempo de descanso
     if(i < rounds){ 
-      //Timbre descanso 2 segundos
-      digitalWrite (buzzer,HIGH); 
-      delay (2000); 
-      digitalWrite (buzzer, LOW); 
       digitalWrite (yellow_led, HIGH); 
-      //Mensaje descanso
-      lcd.clear (); lcd.print ("Round ");lcd.print (i); lcd.print (" Descanso");
-      //Esperamos tiempo descanso y pasamos a milisegundos 
-      delay (rest_time * 1000); 
+      segundosdescanso = rest_time;
+      while (segundosdescanso > 0){
+      delay (1000);          //Descontamos en periodos de 1 segundo
+      if (segundosdescanso == rest_time){
+        digitalWrite (buzzer,HIGH);
+      } 
+      //Apagamos timbre a los dos segundos
+      if (segundosdescanso == rest_time-2){
+        digitalWrite (buzzer,LOW);
+      }
+        segundosdescanso--;    
+        ahoras = ((segundosdescanso / 60)/ 60);   //Convertimos los segundos totales en horas
+        aminutos = (segundosdescanso / 60) % 60;  //Convertimos los segundos totales en minutos
+        asegundos = segundosdescanso % 60;        //Convertimos los segundos totales en periodos de 60 segundos 
+        //Mostrar el round que se esta jugando 
+        lcd.clear (); lcd.setCursor(2,0); lcd.print ("Round ");lcd.print (i); lcd.print (" Descanso");
+        lcd.setCursor(2,2);
+        lcd.print("Tiempo restante");        //Mostramos mensaje de tiempo restante
+        lcd.setCursor(6,3);
+        if (ahoras < 10) lcd.print("0");     // Si las horas son menor que 10, pone un "0" delante.
+        lcd.print(ahoras);                   // Sin este codigo, se muestra asi: H:M:S  (1:M:S)
+        lcd.print(":");
+        if (aminutos < 10) lcd.print("0");   // Si los minutos son menor que 10, pone un "0" delante.
+        lcd.print(aminutos);                 // Sin este codigo, se muestra asi: H:M:S  (H:1:S)
+        lcd.print(":");
+        if (asegundos < 10) lcd.print("0");  // si el valor de segundo esta por debajo de 9 (unidad) antepone un cero
+        lcd.print(asegundos);                // Sin este codigo, se muestra asi: H:M:S  (H:M:1)       
+    }
       digitalWrite(yellow_led, LOW); 
     }
   }
@@ -158,6 +236,6 @@ void loop() {
   digitalWrite (buzzer,LOW);
   digitalWrite (red_led, HIGH); 
   //Mensaje fin entenamiento
-  lcd.setCursor(20, 4);lcd.clear();lcd.print("Fin entrenamiento"); 
+  lcd.clear ();lcd.setCursor(3, 1);lcd.print("Fin entrenamiento"); 
   delay(5000);
 }

@@ -5,6 +5,7 @@ For complete Korud countdown timer documentation please visit the Korud Homepage
 
 # 1.1
 -Add the countdown visual
+
 -Add countdown previous
 
 # License

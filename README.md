@@ -3,7 +3,7 @@ Korud countdown timer is the firmware for create a countdown timer programmable 
 
 For complete Korud countdown timer documentation please visit the Korud Homepage http://korud.com, where you will find in-depth articles, how-to videos, and tutorials on every aspect of Korud countdown timer, as the site develops. For release notes, see the Releases page.
 
-# 2.0
+# 2.0 (Still developing but functional)
 -Change the hardware, now use arduino nano con lcd keypad shield for arduino with 6 buttons.
 
 -The code have the base but is incompatible with the before hardware.

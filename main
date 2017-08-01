@@ -27,13 +27,14 @@ int read_LCD_buttons()
     return btnNONE;  // Por si todo falla
   }
 
-// LEDs
-#define green_led 1
-#define yellow_led 2
-#define red_led 3
-
 // Buzzer
-#define buzzer 0
+#define buzzer 2
+
+// LEDs
+#define green_led 3
+#define yellow_led 4
+#define red_led 5
+
 
 // Definimos tiempos
 int ahoras = 0;            //Variable a mostrar por LCD de las horas 
@@ -61,7 +62,7 @@ void setup() {
   //configuracion de pantalla columnas,filas
   lcd.begin(16, 2);
   //mensaje de inicio
-  lcd.setCursor(0,0);lcd.print("Boxing Timer V2");lcd.setCursor(0, 1); lcd.print("By Korud");delay (2000); 
+  lcd.setCursor(0,0);lcd.print("Boxing Timer V2");lcd.setCursor(0, 1); lcd.print("By Korud");delay (1000); 
 }
 
 void loop() {
@@ -70,81 +71,105 @@ void loop() {
   rounds_time = 0; 
   rest_time = 0;
   digitalWrite (red_led, HIGH); 
+
   
-  //Pantalla inicial para elegir Rounds
+  //Opcion 1 para elegir numero de sesiones
   lcd.clear();lcd.print ("Rounds: 1-30?");lcd.setCursor(0,1);lcd.print ("Select");
   do{
     //leemos pulsaciones
     lcd_key = read_LCD_buttons();
     //Si se detecta pulsacion en boton select sumamos 1 al valor anterior
-      if(lcd_key == btnUP){        
+      if(lcd_key == btnUP || lcd_key == btnDOWN){ //Para poner una sola vez el mensaje. El delay del mensaje fuera del if produce pulsaciones que no se detectan.
+        if(lcd_key == btnUP){     
         digitalWrite(red_led, LOW);
         rounds = rounds + 1;  
         if(rounds == 31){
           rounds = 1;
-        }
+        }}
+        if(lcd_key == btnDOWN){     
+        digitalWrite(red_led, LOW);
+        rounds = rounds - 1;  
+        if(rounds == -1){
+          rounds = 30;
+        }}       
         //Actualizamos mensaje con el nuevo valor
         lcd.clear();lcd.print("Rounds: ");lcd.print(rounds);lcd.setCursor(0,1);lcd.print("Confirmar");
-        delay(500);
+        delay(300); //Sino produce varios avances con una pulsacion.
       }
     
-    //Esto no se porque
-
     //Si se detecta pulsacion en boton ok continuamos al siguiente menu
     if (lcd_key == btnSELECT){
       pasar_menu ++;
-      delay(500);
+      delay(300);
     }
 
 
-    
+//Opcion 2 para elegir tiempo de sesion
   }while (pasar_menu == 0); 
   //Mostramos Mensaje menu 2   
-  lcd.clear(); lcd.print ("Ducracion: ?"); lcd.setCursor(0,1); lcd.print ("Select");delay(200); 
+  lcd.clear(); lcd.print ("Duracion: ?"); lcd.setCursor(0,1); lcd.print ("Select");delay(200); 
   //Definimos el ultimo estado del boton ok a 0
   pasar_menu = 0;
   do{
     lcd_key = read_LCD_buttons();
-    //leemos pulsaciones y convertimos a variable el valor
-
+    
     //Si se detecta pulsacion en boton select sumamos 30 al valor anterior
-      if(lcd_key == btnUP){
+      if(lcd_key == btnUP || lcd_key == btnDOWN){ //Para poner una sola vez el mensaje. El delay del mensaje fuera del if produce pulsaciones que no se detectan.
         digitalWrite(red_led, LOW);
+         if(lcd_key == btnUP){ 
         rounds_time = rounds_time + 30;  
         //Reinicimos a en 330
           if(rounds_time == 330){
-            rounds_time =30;
-          }
+            rounds_time = 0;
+          }}
+          if(lcd_key == btnDOWN){     
+          digitalWrite(red_led, LOW);
+          rounds_time = rounds_time - 30;  
+        //Reinicimos a en 330
+          if(rounds_time == -30){
+            rounds_time = 300;
+        }}       
         //Actualizmos mensaje del menu 2
         lcd.clear();lcd.print("Duracion: ");lcd.print(rounds_time);lcd.setCursor(0,1);lcd.print("Confirmar");
-        delay(500);
+        delay(300);
       }
     
 
     //Si se detecta pulsacion en boton ok continuamos al siguiente menu
     if (lcd_key == btnSELECT){
       pasar_menu ++;
-      delay(500);
+      delay(300);
     }   
+
+  //Opcion 3 Tiempo de descanso  
   }while (pasar_menu == 0);
   //Mostramos Mensaje menu 3   
   lcd.clear();lcd.print ("Descanso: ?");lcd.setCursor(0,1);lcd.print ("Select");delay(200); 
   pasar_menu = 0;
   do{
     lcd_key = read_LCD_buttons();
-      if(lcd_key == btnUP){
+      if(lcd_key == btnUP || lcd_key == btnDOWN){ //Para poner una sola vez el mensaje. El delay del mensaje fuera del if produce pulsaciones que no se detectan.
+        if(lcd_key == btnUP){
         digitalWrite(red_led, LOW);
         rest_time = rest_time + 30;  
         //Reinicimos a en 330
           if(rest_time == 330){
-            rest_time =30;
+            rest_time = 0;
           }
-          //Actualizmos mensaje del menu 3
+        }
+        if(lcd_key == btnDOWN){
+        digitalWrite(red_led, LOW);
+        rest_time = rest_time - 30;  
+        //Reinicimos a en 330
+          if(rest_time == -30){
+            rest_time = 300;
+          }
+        }
+        //Actualizmos mensaje del menu 3
         lcd.clear();lcd.print("Descanso: ");lcd.print(rest_time);lcd.setCursor(0,1);lcd.print("Confirmar");
-        delay(500);
+        delay(300);
       }
-    
-
+      
     //Si se detecta pulsacion en boton ok continumos
     if (lcd_key == btnSELECT){
       pasar_menu ++;

@@ -1,3 +1,8 @@
+# 2.1
+-Change pins leds and buzzer
+
+-Add button down in options
+
 # 2.0
 -Change the hardware, now use arduino nano con lcd keypad shield for arduino with 6 buttons.
 
